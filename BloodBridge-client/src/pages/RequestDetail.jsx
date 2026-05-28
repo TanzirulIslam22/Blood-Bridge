@@ -56,14 +56,14 @@ const RequestDetail = () => {
   };
 
   if (loading) return <LoadingSpinner />;
-  if (!request) return <div className="text-center py-12 text-[#B09090]">Request not found</div>;
+  if (!request) return <div className="text-center py-12 text-\[\#B09090\]">Request not found</div>;
 
   return (
-    <div className="py-20 px-[60px]">
+    <div className="py-20 px-15">
       <div className="max-w-2xl mx-auto">
-        <div className="bg-[#1E0E0E] border border-[rgba(255,255,255,0.05)] p-8">
+        <div className="bg-\[\#1E0E0E\] border border-[rgba(255,255,255,0.05)] p-8">
           <div className="flex items-center justify-between mb-6">
-            <div className="text-[#D62828]" style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '44px', lineHeight: 1 }}>
+            <div className="text-\[\#D62828\]" style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '44px', lineHeight: 1 }}>
               {request.bloodGroup}
             </div>
             <span className="px-3 py-1 text-xs font-semibold tracking-[2px] uppercase bg-[rgba(214,40,40,0.15)] text-[#D62828] border border-[rgba(214,40,40,0.3)] rounded-full">
@@ -71,12 +71,12 @@ const RequestDetail = () => {
             </span>
           </div>
 
-          <h1 className="text-2xl font-semibold text-[#F5E6E0] mb-6" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '1px' }}>
+          <h1 className="text-2xl font-semibold text-\[\#F5E6E0\] mb-6" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '1px' }}>
             Blood Request for {request.recipientName}
           </h1>
 
           <div className="space-y-4">
-            <div className="grid md:grid-cols-2 gap-4">
+            <div className="grid gap-4 md:grid-cols-2">
               <div>
                 <p className="text-xs tracking-[1.5px] uppercase text-[#B09090] mb-1">Hospital</p>
                 <p className="text-[#F5E6E0] font-medium">{request.hospitalName}</p>
@@ -127,7 +127,7 @@ const RequestDetail = () => {
             )}
           </div>
 
-          <div className="mt-8 flex gap-4">
+          <div className="flex gap-4 mt-8">
             {request.status === 'pending' && (
               user ? (
                 <button
@@ -158,10 +158,10 @@ const RequestDetail = () => {
       </div>
 
       {showModal && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center z-50">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/70">
           <div className="bg-[#1E0E0E] border border-[rgba(255,255,255,0.08)] p-6 max-w-md w-full mx-4">
             <h3 className="text-xl font-semibold text-[#F5E6E0] mb-4" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '1px' }}>Confirm Donation</h3>
-            <div className="space-y-2 mb-4">
+            <div className="mb-4 space-y-2">
               <p className="text-[#B09090]"><strong className="text-[#F5E6E0]">Name:</strong> {dbUser?.name}</p>
               <p className="text-[#B09090]"><strong className="text-[#F5E6E0]">Email:</strong> {dbUser?.email}</p>
             </div>
