@@ -32,8 +32,11 @@ async function connectDB() {
   return cached;
 }
 
+app.get('/api/health', (req, res) => {
+  res.json({ message: 'BloodBridge API is running' });
+});
+
 app.use(async (req, res, next) => {
-  if (req.path === '/api/health') return next();
   try {
     await connectDB();
     next();
@@ -48,16 +51,11 @@ app.use('/api/donationRequests', donationRequestRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/stats', statsRoutes);
 
-app.get('/api/health', (req, res) => {
-  res.json({ message: 'BloodBridge API is running' });
-});
-
 if (!process.env.VERCEL) {
-  mongoose.connect(process.env.MONGODB_URI)
+  const PORT = process.env.PORT || 5000;
+  connectDB()
     .then(() => console.log('MongoDB Connected'))
     .catch(err => console.log('MongoDB Error:', err));
-
-  const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
