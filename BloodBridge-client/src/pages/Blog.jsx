@@ -25,12 +25,12 @@ const Blog = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8 text-center">Latest Blog Posts</h1>
+      <h1 className="text-3xl font-bold mb-8 text-center text-[#F5E6E0]">Latest Blog Posts</h1>
       
       {blogs.length > 0 ? (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
           {blogs.map((blog) => (
-            <div key={blog._id} className="bg-white border rounded-lg overflow-hidden shadow-md hover:shadow-lg transition">
+            <div key={blog._id} className="bg-[#1E0E0E] border border-[rgba(255,255,255,0.05)] rounded-lg overflow-hidden hover:border-[rgba(214,40,40,0.3)] transition">
               {blog.thumbnail && (
                 <img 
                   src={blog.thumbnail} 
@@ -39,17 +39,17 @@ const Blog = () => {
                 />
               )}
               <div className="p-6">
-                <h2 className="text-xl font-semibold mb-2">{blog.title}</h2>
-                <p className="text-gray-600 mb-4 line-clamp-3">
+                <h2 className="text-xl font-semibold mb-2 text-[#F5E6E0]">{blog.title}</h2>
+                <p className="text-[#B09090] mb-4 line-clamp-3">
                   {blog.content?.replace(/<[^>]*>/g, '').substring(0, 150)}...
                 </p>
                 <div className="flex items-center justify-between">
-                  <span className="text-gray-500 text-sm">
+                  <span className="text-[#B09090] text-sm">
                     {new Date(blog.createdAt).toLocaleDateString()}
                   </span>
                   <Link 
                     to={`/blog/${blog._id}`}
-                    className="text-red-600 font-semibold hover:underline"
+                    className="text-[#D62828] font-semibold hover:underline"
                   >
                     Read More
                   </Link>
@@ -60,7 +60,7 @@ const Blog = () => {
         </div>
       ) : (
         <div className="text-center py-12">
-          <p className="text-gray-600 text-lg">No blog posts available</p>
+          <p className="text-[#B09090] text-lg">No blog posts available</p>
         </div>
       )}
     </div>

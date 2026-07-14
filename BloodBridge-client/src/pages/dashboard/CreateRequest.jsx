@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import axios from 'axios';
+import axios from '../../hooks/useAxios';
 import { toast } from 'react-hot-toast';
 import { districts, bloodGroups } from '../../data/bangladesh';
 
@@ -35,13 +35,10 @@ const CreateRequest = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
-      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/donationRequests`, {
+      await axios.post('/api/donationRequests', {
         ...formData,
         requesterName: dbUser?.name || user?.displayName,
         requesterEmail: dbUser?.email || user?.email
-      }, {
-        headers: { Authorization: `Bearer ${token}` }
       });
       toast.success('Blood request created successfully!');
       navigate('/dashboard/my-donation-requests');

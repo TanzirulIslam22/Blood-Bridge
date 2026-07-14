@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useAuth } from '../../context/AuthContext';
-import axios from 'axios';
+import axios from '../../hooks/useAxios';
 import { toast } from 'react-hot-toast';
 import { districts, bloodGroups } from '../../data/bangladesh';
 import { imgbbUpload } from '../../utils/imgbbUpload';
@@ -43,10 +43,7 @@ const Profile = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      const token = localStorage.getItem('token');
-      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/users/${dbUser.id}`, formData, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await axios.put(`/api/users/${dbUser.id}`, formData);
       toast.success('Profile updated successfully!');
     } catch (error) {
       toast.error('Failed to update profile');

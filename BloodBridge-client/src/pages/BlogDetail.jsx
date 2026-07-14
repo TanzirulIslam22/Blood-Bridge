@@ -23,7 +23,7 @@ const BlogDetail = () => {
   }, [id]);
 
   if (loading) return <LoadingSpinner />;
-  if (!blog) return <div className="text-center py-12">Blog not found</div>;
+  if (!blog) return <div className="text-center py-12 text-[#B09090]">Blog not found</div>;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -36,23 +36,23 @@ const BlogDetail = () => {
           />
         )}
         
-        <h1 className="text-3xl md:text-4xl font-bold mb-4">{blog.title}</h1>
+        <h1 className="text-3xl md:text-4xl font-bold mb-4 text-[#F5E6E0]">{blog.title}</h1>
         
-        <div className="flex items-center gap-4 text-gray-500 mb-6">
+        <div className="flex items-center gap-4 text-[#B09090] mb-6">
           <span>By {blog.authorName || 'Admin'}</span>
           <span>|</span>
           <span>{new Date(blog.createdAt).toLocaleDateString()}</span>
         </div>
 
         <div 
-          className="prose max-w-none"
+          className="prose max-w-none text-[#F5E6E0]"
           dangerouslySetInnerHTML={{ __html: blog.content }}
         />
 
         <div className="mt-8">
           <Link 
             to="/blog" 
-            className="inline-block bg-gray-200 text-gray-700 px-6 py-2 rounded-lg hover:bg-gray-300"
+            className="inline-block bg-[#1E0E0E] border border-[rgba(255,255,255,0.15)] text-[#F5E6E0] px-6 py-2 rounded-lg hover:border-[#D62828] hover:text-[#D62828] transition-colors"
           >
             Back to Blog
           </Link>

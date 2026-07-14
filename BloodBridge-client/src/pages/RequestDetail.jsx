@@ -30,9 +30,11 @@ const RequestDetail = () => {
 
   const handleDonate = async () => {
     try {
+      const token = localStorage.getItem('token');
       await axios.put(
         `${import.meta.env.VITE_API_BASE_URL}/api/donationRequests/${id}/donate`,
-        { name: dbUser?.name, email: dbUser?.email }
+        { name: dbUser?.name, email: dbUser?.email },
+        { headers: { Authorization: `Bearer ${token}` } }
       );
       toast.success('You have accepted this donation request!');
       setShowModal(false);

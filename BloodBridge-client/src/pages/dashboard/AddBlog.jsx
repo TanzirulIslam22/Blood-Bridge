@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
-import axios from 'axios';
+import axios from '../../hooks/useAxios';
 import { toast } from 'react-hot-toast';
 import { imgbbUpload } from '../../utils/imgbbUpload';
 
@@ -39,7 +39,7 @@ const AddBlog = () => {
     e.preventDefault();
     setLoading(true);
     try {
-      await axios.post(`${import.meta.env.VITE_API_BASE_URL}/api/blogs`, {
+      await axios.post('/api/blogs', {
         ...formData,
         authorName: dbUser?.name || user?.displayName,
         authorEmail: dbUser?.email || user?.email
@@ -55,29 +55,29 @@ const AddBlog = () => {
 
 return (
     <div className="max-w-4xl mx-auto">
-      <div className="bg-white rounded-lg shadow p-6">
-        <h1 className="text-2xl font-bold mb-6">Add New Blog Post</h1>
+      <div className="bg-[#1E0E0E] border border-[rgba(255,255,255,0.05)] rounded-lg p-6">
+        <h1 className="text-2xl font-bold mb-6 text-[#F5E6E0]">Add New Blog Post</h1>
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-gray-700 mb-2">Title</label>
+            <label className="block text-[#B09090] mb-2">Title</label>
             <input
               type="text"
               name="title"
               value={formData.title}
               onChange={handleChange}
-              className="w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-red-600"
+              className="w-full px-4 py-2 bg-[#150A0A] border border-[rgba(255,255,255,0.08)] text-[#F5E6E0] rounded-lg focus:outline-none focus:border-[#D62828] transition-colors"
               required
             />
           </div>
 
           <div>
-            <label className="block text-gray-700 mb-2">Thumbnail</label>
+            <label className="block text-[#B09090] mb-2">Thumbnail</label>
             <input
               type="file"
               accept="image/*"
               onChange={handlePhotoChange}
-              className="w-full px-4 py-2 border rounded-lg"
+              className="w-full px-4 py-2 bg-[#150A0A] border border-[rgba(255,255,255,0.08)] text-[#F5E6E0] rounded-lg"
             />
             {formData.thumbnail && (
               <img src={formData.thumbnail} alt="Preview" className="mt-2 w-48 h-32 object-cover rounded" />
@@ -85,7 +85,7 @@ return (
           </div>
 
           <div>
-            <label className="block text-gray-700 mb-2">Content</label>
+            <label className="block text-[#B09090] mb-2">Content</label>
             <ReactQuill 
               theme="snow" 
               value={formData.content} 
@@ -97,7 +97,7 @@ return (
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-red-600 text-white py-3 rounded-lg hover:bg-red-700 disabled:bg-gray-400 mt-16"
+            className="w-full bg-[#D62828] text-white py-3 rounded-lg hover:bg-[#FF2D2D] disabled:opacity-50 mt-16 transition-colors"
           >
             {loading ? 'Creating...' : 'Create Blog Post'}
           </button>

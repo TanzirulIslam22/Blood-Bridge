@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
-import axios from 'axios';
+import axios from '../../hooks/useAxios';
 import { toast } from 'react-hot-toast';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import Swal from 'sweetalert2';
@@ -14,10 +14,7 @@ const MyRequests = () => {
   useEffect(() => {
     const fetchRequests = async () => {
       try {
-        const token = localStorage.getItem('token');
-        const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/donationRequests?email=${dbUser?.email}`, {
-          headers: { Authorization: `Bearer ${token}` }
-        });
+        const response = await axios.get(`/api/donationRequests?email=${dbUser?.email}`);
         setRequests(response.data.data);
       } catch (error) {
         console.error('Error fetching requests:', error);
@@ -41,10 +38,7 @@ const MyRequests = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const token = localStorage.getItem('token');
-          await axios.delete(`${import.meta.env.VITE_API_BASE_URL}/api/donationRequests/${id}`, {
-            headers: { Authorization: `Bearer ${token}` }
-          });
+          await axios.delete(`/api/donationRequests/${id}`);
           setRequests(requests.filter(r => r._id !== id));
           toast.success('Request deleted successfully');
         } catch (error) {
@@ -56,10 +50,7 @@ const MyRequests = () => {
 
   const handleComplete = async (id) => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/donationRequests/${id}/complete`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await axios.put(`/api/donationRequests/${id}/complete`, {});
       setRequests(requests.map(r => r._id === id ? { ...r, status: 'done' } : r));
       toast.success('Request marked as completed');
     } catch (error) {
@@ -69,10 +60,7 @@ const MyRequests = () => {
 
   const handleCancel = async (id) => {
     try {
-      const token = localStorage.getItem('token');
-      await axios.put(`${import.meta.env.VITE_API_BASE_URL}/api/donationRequests/${id}/cancel`, {}, {
-        headers: { Authorization: `Bearer ${token}` }
-      });
+      await axios.put(`/api/donationRequests/${id}/cancel`, {});
       setRequests(requests.map(r => r._id === id ? { ...r, status: 'canceled' } : r));
       toast.success('Request canceled');
     } catch (error) {
