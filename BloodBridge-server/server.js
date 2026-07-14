@@ -16,7 +16,7 @@ app.use(cors({
     'http://localhost:5173',
     'http://localhost:3000',
     'https://bloodbridge-client-ten.vercel.app',
-    'https://bloodbridge-client.vercel.app'
+    'https://bloodbridge-client-5phyy0iq0-tanzirstudio.vercel.app'
   ],
   credentials: true
 }));
