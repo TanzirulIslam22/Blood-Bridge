@@ -15,15 +15,32 @@ app.use(cors({
   origin: [
     'http://localhost:5173',
     'http://localhost:3000',
+    'https://bloodbridge-client-ten.vercel.app',
     'https://bloodbridge-client.vercel.app'
   ],
   credentials: true
 }));
 app.use(express.json());
 
-mongoose.connect(process.env.MONGODB_URI)
-  .then(() => console.log('MongoDB Connected'))
-  .catch(err => console.log('MongoDB Error:', err));
+let cached = null;
+
+async function connectDB() {
+  if (cached && mongoose.connection.readyState === 1) {
+    return cached;
+  }
+  cached = await mongoose.connect(process.env.MONGODB_URI);
+  return cached;
+}
+
+app.use(async (req, res, next) => {
+  if (req.path === '/api/health') return next();
+  try {
+    await connectDB();
+    next();
+  } catch (err) {
+    res.status(500).json({ message: 'Database connection failed' });
+  }
+});
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
@@ -36,6 +53,10 @@ app.get('/api/health', (req, res) => {
 });
 
 if (!process.env.VERCEL) {
+  mongoose.connect(process.env.MONGODB_URI)
+    .then(() => console.log('MongoDB Connected'))
+    .catch(err => console.log('MongoDB Error:', err));
+
   const PORT = process.env.PORT || 5000;
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
