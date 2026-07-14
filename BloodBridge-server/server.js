@@ -11,7 +11,14 @@ const statsRoutes = require('./routes/stats');
 
 const app = express();
 
-app.use(cors());
+app.use(cors({
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:3000',
+    'https://bloodbridge-client.vercel.app'
+  ],
+  credentials: true
+}));
 app.use(express.json());
 
 mongoose.connect(process.env.MONGODB_URI)
@@ -28,7 +35,11 @@ app.get('/api/health', (req, res) => {
   res.json({ message: 'BloodBridge API is running' });
 });
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+if (!process.env.VERCEL) {
+  const PORT = process.env.PORT || 5000;
+  app.listen(PORT, () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+module.exports = app;
