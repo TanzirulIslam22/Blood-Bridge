@@ -23,26 +23,26 @@ const DashboardHome = () => {
 
   return (
     <div>
-      <div className="bg-white rounded-lg shadow p-6 mb-6">
-        <h1 className="text-2xl font-bold mb-2">Welcome, {dbUser?.name}!</h1>
-        <p className="text-gray-600">Role: <span className="capitalize font-semibold">{dbUser?.role}</span></p>
+      <div className="p-6 mb-6 rounded-lg shadow ">
+        <h1 className="mb-2 text-2xl font-bold">Welcome, {dbUser?.name}!</h1>
+        <p className="text-gray-600">Role: <span className="font-semibold capitalize">{dbUser?.role}</span></p>
       </div>
 
       {dbUser?.role === 'admin' && stats && (
-        <div className="grid md:grid-cols-4 gap-4 mb-6">
-          <div className="bg-white rounded-lg shadow p-6">
+        <div className="grid gap-4 mb-6 md:grid-cols-4">
+          <div className="p-6 bg-white rounded-lg shadow">
             <p className="text-gray-500">Total Donors</p>
             <p className="text-3xl font-bold text-red-600">{stats.totalDonors}</p>
           </div>
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="p-6 bg-white rounded-lg shadow">
             <p className="text-gray-500">Total Volunteers</p>
             <p className="text-3xl font-bold text-blue-600">{stats.totalVolunteers}</p>
           </div>
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="p-6 bg-white rounded-lg shadow">
             <p className="text-gray-500">Total Requests</p>
             <p className="text-3xl font-bold text-green-600">{stats.totalRequests}</p>
           </div>
-          <div className="bg-white rounded-lg shadow p-6">
+          <div className="p-6 bg-white rounded-lg shadow">
             <p className="text-gray-500">Completed</p>
             <p className="text-3xl font-bold text-purple-600">{stats.completedRequests}</p>
           </div>
@@ -50,12 +50,12 @@ const DashboardHome = () => {
       )}
 
       {dbUser?.role === 'donor' && (
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-bold mb-4">My Recent Requests</h2>
+        <div className="p-6 shadow rounde-d-lg bg-red-950">
+          <h2 className="mb-4 text-xl font-bold">My Recent Requests</h2>
           {myRequests.length > 0 ? (
             <div className="space-y-3">
               {myRequests.slice(0, 5).map(req => (
-                <div key={req._id} className="flex items-center justify-between p-3 bg-gray-50 rounded">
+                <div key={req._id} className="flex items-center justify-between p-3 bg-red-900 rounded">
                   <div>
                     <p className="font-semibold">For: {req.recipientName}</p>
                     <p className="text-sm text-gray-500">{req.bloodGroup} | {req.district}</p>
@@ -73,8 +73,8 @@ const DashboardHome = () => {
       )}
 
       {dbUser?.role === 'volunteer' && (
-        <div className="bg-white rounded-lg shadow p-6">
-          <h2 className="text-xl font-bold mb-4">Volunteer Dashboard</h2>
+        <div className="p-6 bg-white rounded-lg shadow">
+          <h2 className="mb-4 text-xl font-bold">Volunteer Dashboard</h2>
           <p className="text-gray-600">Thank you for being a volunteer! You can help manage content and review donation requests.</p>
         </div>
       )}

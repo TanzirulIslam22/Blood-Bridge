@@ -11,39 +11,8 @@ const statsRoutes = require('./routes/stats');
 
 const app = express();
 
-app.use(cors({
-  origin: [
-    'http://localhost:5173',
-    'http://localhost:3000',
-    'https://bloodbridge-client-ten.vercel.app',
-    'https://bloodbridge-client-5phyy0iq0-tanzirstudio.vercel.app'
-  ],
-  credentials: true
-}));
+app.use(cors());
 app.use(express.json());
-
-let cached = null;
-
-async function connectDB() {
-  if (cached && mongoose.connection.readyState === 1) {
-    return cached;
-  }
-  cached = await mongoose.connect(process.env.MONGODB_URI);
-  return cached;
-}
-
-app.get('/api/health', (req, res) => {
-  res.json({ message: 'BloodBridge API is running' });
-});
-
-app.use(async (req, res, next) => {
-  try {
-    await connectDB();
-    next();
-  } catch (err) {
-    res.status(500).json({ message: 'Database connection failed' });
-  }
-});
 
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
@@ -51,14 +20,20 @@ app.use('/api/donationRequests', donationRequestRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/stats', statsRoutes);
 
+app.get('/api/health', (req, res) => {
+  res.json({ message: 'BloodBridge API is running' });
+});
+
 if (!process.env.VERCEL) {
   const PORT = process.env.PORT || 5000;
-  connectDB()
-    .then(() => console.log('MongoDB Connected'))
+  mongoose.connect(process.env.MONGODB_URI)
+    .then(() => {
+      console.log('MongoDB Connected');
+      app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+      });
+    })
     .catch(err => console.log('MongoDB Error:', err));
-  app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-  });
 }
 
 module.exports = app;
