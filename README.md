@@ -377,6 +377,16 @@ The project includes:
 
 ---
 
+## 🚨 Live Deployment — Google Sign-in Fix
+
+If Google login fails on the deployed site with `auth/unauthorized-domain`, the Vercel domain is not whitelisted in Firebase. Add every public domain the app runs on (e.g. `blood-bridge-orcin.vercel.app`) to:
+
+**Firebase Console → your project → Authentication → Settings → Authorized domains**
+
+The list is currently `localhost`, `blood-bridge-4e78d.firebaseapp.com`, `blood-bridge-4e78d.web.app`, and `bloodbridge-client-ten.vercel.app`. The production domain must be added for Google login to work.
+
+---
+
 ## 📄 License
 
 This project is licensed under the **MIT License** — see the [LICENSE](LICENSE) file for details.

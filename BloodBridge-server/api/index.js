@@ -1,7 +1,7 @@
-const mongoose = require('mongoose');
+const { connectDB } = require('../config/db');
 
 if (process.env.VERCEL && process.env.MONGODB_URI) {
-  mongoose.connect(process.env.MONGODB_URI).catch((err) => {
+  connectDB().catch((err) => {
     console.error('MongoDB connection error:', err.message);
   });
 }

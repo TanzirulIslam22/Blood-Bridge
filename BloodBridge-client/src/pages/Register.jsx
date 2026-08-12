@@ -78,7 +78,19 @@ const Register = () => {
       navigate('/');
     } catch (error) {
       console.error('Registration error:', error);
-      toast.error(error.message || t('auth.registerFailed'));
+      const code = error?.code;
+      const serverMessage = error?.response?.data?.message;
+      let message;
+      if (code === 'auth/email-already-in-use') {
+        message = t('auth.emailInUse');
+      } else if (code === 'auth/invalid-email') {
+        message = t('auth.invalidEmail');
+      } else if (code === 'auth/weak-password') {
+        message = t('auth.passwordMin');
+      } else {
+        message = serverMessage || error?.message || t('auth.registerFailed');
+      }
+      toast.error(message);
     } finally {
       setLoading(false);
     }

@@ -5,10 +5,24 @@ const verifyToken = require('../middleware/verifyToken');
 
 const router = express.Router();
 
+const normalizeEmail = (email = '') => String(email).trim().toLowerCase();
+
+const escapeRegex = (value) => String(value).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
+const findUserByEmail = (email) => {
+  const normalized = normalizeEmail(email);
+  return User.findOne({ email: { $regex: `^${escapeRegex(normalized)}$`, $options: 'i' } });
+};
+
 router.post('/jwt', async (req, res) => {
   try {
-    const { email } = req.body;
-    const user = await User.findOne({ email });
+    const email = normalizeEmail(req.body.email);
+
+    if (!email) {
+      return res.status(400).json({ message: 'Email is required' });
+    }
+
+    const user = await findUserByEmail(email);
 
     if (!user) {
       return res.status(404).json({ message: 'User not found' });
@@ -32,9 +46,14 @@ router.post('/jwt', async (req, res) => {
 
 router.post('/register', async (req, res) => {
   try {
-    const { name, email, avatar, bloodGroup, district, upazila } = req.body;
+    const { name, email: rawEmail, avatar, bloodGroup, district, upazila } = req.body;
+    const email = normalizeEmail(rawEmail);
 
-    const existingUser = await User.findOne({ email });
+    if (!name || !email) {
+      return res.status(400).json({ message: 'Name and email are required' });
+    }
+
+    const existingUser = await findUserByEmail(email);
     if (existingUser) {
       return res.status(400).json({ message: 'User already exists' });
     }

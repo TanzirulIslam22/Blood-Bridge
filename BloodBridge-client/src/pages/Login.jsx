@@ -17,6 +17,30 @@ const Login = () => {
 
   const from = location.state?.from?.pathname || '/';
 
+  const getAuthError = (error, fallback) => {
+    const code = error?.code;
+    const serverMessage = error?.response?.data?.message;
+    switch (code) {
+      case 'auth/invalid-credential':
+      case 'auth/wrong-password':
+      case 'auth/user-not-found':
+      case 'auth/invalid-login-credentials':
+        return t('auth.invalidCredentials');
+      case 'auth/user-disabled':
+        return t('auth.userDisabled');
+      case 'auth/unauthorized-domain':
+        return t('auth.unauthorizedDomain');
+      case 'auth/popup-closed-by-user':
+        return t('auth.popupClosed');
+      case 'auth/account-exists-with-different-credential':
+        return t('auth.accountExistsDifferentCredential');
+      case 'auth/too-many-requests':
+        return t('auth.tooManyRequests');
+      default:
+        return serverMessage || error?.message || fallback;
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
@@ -26,7 +50,7 @@ const Login = () => {
       navigate(from, { replace: true });
     } catch (error) {
       console.error('Login error:', error);
-      toast.error(error.message || t('auth.loginFailed'));
+      toast.error(getAuthError(error, t('auth.loginFailed')));
     } finally {
       setLoading(false);
     }
@@ -40,7 +64,7 @@ const Login = () => {
       navigate(from, { replace: true });
     } catch (error) {
       console.error('Google login error:', error);
-      toast.error(t('auth.googleLoginFailed'));
+      toast.error(getAuthError(error, t('auth.googleLoginFailed')));
     } finally {
       setLoading(false);
     }
