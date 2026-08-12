@@ -1,12 +1,16 @@
 import { Link } from "react-router-dom";
+import { useLanguage } from "../context/LanguageContext";
 
 const Footer = () => {
+  const { t, lang } = useLanguage();
+  const bnFont = lang === 'bn' ? { fontFamily: "'Noto Sans Bengali', 'DM Sans', sans-serif" } : {};
+
   return (
     <footer
       className="bg-[#050202] py-10 px-[60px]"
       style={{ borderTop: "1px solid rgba(255, 255, 255, 0.04)" }}
     >
-      <div className="grid gap-12 md:grid-cols-3">
+      <div className="grid gap-12 md:grid-cols-3" style={bnFont}>
         <div>
           <Link to="/" className="flex items-center gap-3">
             <div
@@ -26,18 +30,17 @@ const Footer = () => {
             </span>
           </Link>
           <p className="text-sm text-[#B09090] mt-4 leading-relaxed">
-            Connecting blood donors, patients, and hospitals across Bangladesh
-            to save lives.
+            {t('footer.tagline')}
           </p>
         </div>
         <div>
           <h4 className="text-xs font-semibold tracking-[2px] uppercase text-[#D62828] mb-4">
-            Quick Links
+            {t('footer.quickLinks')}
           </h4>
           <ul className="space-y-2.5 text-sm text-[#B09090]">
             <li>
               <Link to="/" className="hover:text-[#F5E6E0] transition-colors">
-                Home
+                {t('footer.home')}
               </Link>
             </li>
             <li>
@@ -45,7 +48,7 @@ const Footer = () => {
                 to="/blood-donation-requests"
                 className="hover:text-[#F5E6E0] transition-colors"
               >
-                Blood Requests
+                {t('footer.bloodRequests')}
               </Link>
             </li>
             <li>
@@ -53,7 +56,15 @@ const Footer = () => {
                 to="/search-donors"
                 className="hover:text-[#F5E6E0] transition-colors"
               >
-                Find Donors
+                {t('footer.findDonors')}
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/donation-camps"
+                className="hover:text-[#F5E6E0] transition-colors"
+              >
+                {t('footer.donationCamps')}
               </Link>
             </li>
             <li>
@@ -61,21 +72,21 @@ const Footer = () => {
                 to="/blog"
                 className="hover:text-[#F5E6E0] transition-colors"
               >
-                Blog
+                {t('footer.blog')}
               </Link>
             </li>
           </ul>
         </div>
         <div>
           <h4 className="text-xs font-semibold tracking-[2px] uppercase text-[#D62828] mb-4">
-            Contact
+            {t('footer.contact')}
           </h4>
-          <p className="text-sm text-[#B09090]">Email: info@bloodbridge.com</p>
-          <p className="text-sm text-[#B09090] mt-2">Phone: +880-XXX-XXXXXX</p>
+          <p className="text-sm text-[#B09090]">{t('footer.email')}</p>
+          <p className="text-sm text-[#B09090] mt-2">{t('footer.phone')}</p>
         </div>
       </div>
       <div className="border-t border-[rgba(255,255,255,0.04)] mt-8 pt-8 text-center text-sm text-[rgba(255,255,255,0.2)]">
-        <p>&copy; 2026 BloodBridge. All rights reserved.</p>
+        <p>&copy; 2026 BloodBridge. {t('footer.rights')}</p>
       </div>
     </footer>
   );

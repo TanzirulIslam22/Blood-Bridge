@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom/client';
 import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { Toaster } from 'react-hot-toast';
 import { AuthProvider } from './context/AuthContext';
+import { LanguageProvider } from './context/LanguageContext';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
 import PrivateRoute from './components/PrivateRoute';
@@ -17,6 +18,10 @@ import SearchDonors from './pages/SearchDonors';
 import Blog from './pages/Blog';
 import BlogDetail from './pages/BlogDetail';
 import NotFound from './pages/NotFound';
+import HealthCheck from './pages/HealthCheck';
+import Certificate from './pages/Certificate';
+import DonationCamps from './pages/DonationCamps';
+import CampDetail from './pages/CampDetail';
 
 import DashboardHome from './pages/dashboard/DashboardHome';
 import Profile from './pages/dashboard/Profile';
@@ -27,14 +32,19 @@ import AllUsers from './pages/dashboard/AllUsers';
 import AllRequestsAdmin from './pages/dashboard/AllRequestsAdmin';
 import ContentManagement from './pages/dashboard/ContentManagement';
 import AddBlog from './pages/dashboard/AddBlog';
+import Leaderboard from './pages/dashboard/Leaderboard';
+import MyCamps from './pages/dashboard/MyCamps';
+import CreateCamp from './pages/dashboard/CreateCamp';
 
 import './style.css';
 
-const noNavbarRoutes = ['/login', '/register'];
+const noNavbarRoutes = ['/login', '/register', '/certificate'];
 
 function AppContent() {
   const location = useLocation();
-  const showNavbar = !noNavbarRoutes.includes(location.pathname);
+  const showNavbar = !noNavbarRoutes.some(route =>
+    route === '/certificate' ? location.pathname.startsWith(route) : location.pathname === route
+  );
 
   return (
     <>
@@ -47,6 +57,10 @@ function AppContent() {
           <Route path="/blood-donation-requests" element={<AllRequests />} />
           <Route path="/blood-donation-requests/:id" element={<RequestDetail />} />
           <Route path="/search-donors" element={<SearchDonors />} />
+          <Route path="/health-check" element={<HealthCheck />} />
+          <Route path="/certificate/:certificateId" element={<Certificate />} />
+          <Route path="/donation-camps" element={<DonationCamps />} />
+          <Route path="/donation-camps/:id" element={<CampDetail />} />
           <Route path="/blog" element={<Blog />} />
           <Route path="/blog/:id" element={<BlogDetail />} />
           <Route path="*" element={<NotFound />} />
@@ -58,6 +72,9 @@ function AppContent() {
           }>
             <Route index element={<DashboardHome />} />
             <Route path="profile" element={<Profile />} />
+            <Route path="leaderboard" element={<Leaderboard />} />
+            <Route path="my-camps" element={<MyCamps />} />
+            <Route path="create-camp" element={<CreateCamp />} />
             <Route path="create-donation-request" element={<CreateRequest />} />
             <Route path="my-donation-requests" element={<MyRequests />} />
             <Route path="edit-donation-request/:id" element={<EditRequest />} />
@@ -77,8 +94,10 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <AppContent />
-        <Toaster position="top-center" />
+        <LanguageProvider>
+          <AppContent />
+          <Toaster position="top-center" />
+        </LanguageProvider>
       </AuthProvider>
     </BrowserRouter>
   );

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useLanguage } from '../../context/LanguageContext';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 import axios from '../../hooks/useAxios';
@@ -9,6 +10,7 @@ import { imgbbUpload } from '../../utils/imgbbUpload';
 
 const AddBlog = () => {
   const { dbUser, user } = useAuth();
+  const { t } = useLanguage();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     title: '',
@@ -28,9 +30,9 @@ const AddBlog = () => {
       try {
         const url = await imgbbUpload(file);
         setFormData(prev => ({ ...prev, thumbnail: url }));
-        toast.success('Photo uploaded successfully');
+        toast.success(t('profile.photoUploaded'));
       } catch (error) {
-        toast.error('Photo upload failed');
+        toast.error(t('profile.photoFailed'));
       }
     }
   };
@@ -44,10 +46,10 @@ const AddBlog = () => {
         authorName: dbUser?.name || user?.displayName,
         authorEmail: dbUser?.email || user?.email
       });
-      toast.success('Blog created successfully!');
+      toast.success(t('dashboard.blogCreated'));
       navigate('/dashboard/content-management');
     } catch (error) {
-      toast.error('Failed to create blog');
+      toast.error(t('dashboard.createBlogFailed'));
     } finally {
       setLoading(false);
     }
@@ -56,11 +58,11 @@ const AddBlog = () => {
 return (
     <div className="max-w-4xl mx-auto">
       <div className="bg-[#1E0E0E] border border-[rgba(255,255,255,0.05)] rounded-lg p-6">
-        <h1 className="text-2xl font-bold mb-6 text-[#F5E6E0]">Add New Blog Post</h1>
+        <h1 className="text-2xl font-bold mb-6 text-[#F5E6E0]">{t('dashboard.addBlogTitle')}</h1>
         
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-[#B09090] mb-2">Title</label>
+            <label className="block text-[#B09090] mb-2">{t('dashboard.title')}</label>
             <input
               type="text"
               name="title"
@@ -72,7 +74,7 @@ return (
           </div>
 
           <div>
-            <label className="block text-[#B09090] mb-2">Thumbnail</label>
+            <label className="block text-[#B09090] mb-2">{t('dashboard.thumbnail')}</label>
             <input
               type="file"
               accept="image/*"
@@ -80,12 +82,12 @@ return (
               className="w-full px-4 py-2 bg-[#150A0A] border border-[rgba(255,255,255,0.08)] text-[#F5E6E0] rounded-lg"
             />
             {formData.thumbnail && (
-              <img src={formData.thumbnail} alt="Preview" className="mt-2 w-48 h-32 object-cover rounded" />
+              <img src={formData.thumbnail} alt={t('dashboard.blogPreview')} className="mt-2 w-48 h-32 object-cover rounded" />
             )}
           </div>
 
           <div>
-            <label className="block text-[#B09090] mb-2">Content</label>
+            <label className="block text-[#B09090] mb-2">{t('dashboard.content')}</label>
             <ReactQuill 
               theme="snow" 
               value={formData.content} 
@@ -99,7 +101,7 @@ return (
             disabled={loading}
             className="w-full bg-[#D62828] text-white py-3 rounded-lg hover:bg-[#FF2D2D] disabled:opacity-50 mt-16 transition-colors"
           >
-            {loading ? 'Creating...' : 'Create Blog Post'}
+            {loading ? t('dashboard.creating') : t('dashboard.createBlog')}
           </button>
         </form>
       </div>

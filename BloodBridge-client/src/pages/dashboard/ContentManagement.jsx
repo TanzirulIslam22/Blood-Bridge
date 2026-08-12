@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
+import { useLanguage } from '../../context/LanguageContext';
 import axios from '../../hooks/useAxios';
 import { toast } from 'react-hot-toast';
 import LoadingSpinner from '../../components/LoadingSpinner';
 import Swal from 'sweetalert2';
 
 const ContentManagement = () => {
+  const { t } = useLanguage();
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -28,9 +30,9 @@ const ContentManagement = () => {
     try {
       await axios.put(`/api/blogs/${id}/publish`);
       setBlogs(blogs.map(b => b._id === id ? { ...b, status: 'published' } : b));
-      toast.success('Blog published successfully');
+      toast.success(t('dashboard.blogPublished'));
     } catch (error) {
-      toast.error('Failed to publish blog');
+      toast.error(t('dashboard.publishFailed'));
     }
   };
 
@@ -38,28 +40,28 @@ const ContentManagement = () => {
     try {
       await axios.put(`/api/blogs/${id}/unpublish`);
       setBlogs(blogs.map(b => b._id === id ? { ...b, status: 'draft' } : b));
-      toast.success('Blog unpublished successfully');
+      toast.success(t('dashboard.blogUnpublished'));
     } catch (error) {
-      toast.error('Failed to unpublish blog');
+      toast.error(t('dashboard.unpublishFailed'));
     }
   };
 
   const handleDelete = async (id) => {
     Swal.fire({
-      title: 'Are you sure?',
-      text: 'This action cannot be undone',
+      title: t('dashboard.deleteTitle'),
+      text: t('dashboard.deleteText'),
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Delete',
-      cancelButtonText: 'Cancel'
+      confirmButtonText: t('dashboard.delete'),
+      cancelButtonText: t('dashboard.cancel')
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
           await axios.delete(`/api/blogs/${id}`);
           setBlogs(blogs.filter(b => b._id !== id));
-          toast.success('Blog deleted successfully');
+          toast.success(t('dashboard.blogDeleted'));
         } catch (error) {
-          toast.error('Failed to delete blog');
+          toast.error(t('dashboard.deleteBlogFailed'));
         }
       }
     });
@@ -68,7 +70,7 @@ const ContentManagement = () => {
   return (
 <div>
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold text-[#F5E6E0]">Content Management</h1>
+        <h1 className="text-2xl font-bold text-[#F5E6E0]">{t('dashboard.contentManagementTitle')}</h1>
       </div>
 
       {loading ? (
@@ -78,21 +80,21 @@ const ContentManagement = () => {
           <table className="w-full">
             <thead className="bg-[#150A0A]">
               <tr>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[#B09090] uppercase">Title</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[#B09090] uppercase">Author</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[#B09090] uppercase">Status</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[#B09090] uppercase">Date</th>
-                <th className="px-6 py-3 text-left text-xs font-medium text-[#B09090] uppercase">Actions</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-[#B09090] uppercase">{t('dashboard.title')}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-[#B09090] uppercase">{t('dashboard.author')}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-[#B09090] uppercase">{t('dashboard.status')}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-[#B09090] uppercase">{t('dashboard.date')}</th>
+                <th className="px-6 py-3 text-left text-xs font-medium text-[#B09090] uppercase">{t('dashboard.actions')}</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-[rgba(255,255,255,0.05)]">
               {blogs.map((blog) => (
                 <tr key={blog._id}>
                   <td className="px-6 py-4 font-medium text-[#F5E6E0]">{blog.title}</td>
-                  <td className="px-6 py-4 text-[#F5E6E0]">{blog.authorName || 'Admin'}</td>
+                  <td className="px-6 py-4 text-[#F5E6E0]">{blog.authorName || t('dashboard.authorFallback')}</td>
                   <td className="px-6 py-4">
                     <span className={`px-2 py-1 rounded text-sm ${blog.status === 'published' ? 'bg-[rgba(34,197,94,0.15)] text-green-400' : 'bg-[rgba(255,255,255,0.08)] text-[#B09090]'}`}>
-                      {blog.status}
+                      {blog.status === 'published' ? t('dashboard.published') : t('dashboard.draft')}
                     </span>
                   </td>
                   <td className="px-6 py-4 text-[#F5E6E0]">{new Date(blog.createdAt).toLocaleDateString()}</td>
@@ -103,21 +105,21 @@ const ContentManagement = () => {
                           onClick={() => handlePublish(blog._id)}
                           className="text-green-400 hover:underline"
                         >
-                          Publish
+                          {t('dashboard.publish')}
                         </button>
                       ) : (
                         <button
                           onClick={() => handleUnpublish(blog._id)}
                           className="text-yellow-400 hover:underline"
                         >
-                          Unpublish
+                          {t('dashboard.unpublish')}
                         </button>
                       )}
                       <button
                         onClick={() => handleDelete(blog._id)}
                         className="text-red-400 hover:underline"
                       >
-                        Delete
+                        {t('dashboard.delete')}
                       </button>
                     </div>
                   </td>
@@ -128,7 +130,7 @@ const ContentManagement = () => {
         </div>
       ) : (
         <div className="text-center py-12">
-          <p className="text-[#B09090]">No blog posts yet</p>
+          <p className="text-[#B09090]">{t('dashboard.noBlogs')}</p>
         </div>
       )}
     </div>

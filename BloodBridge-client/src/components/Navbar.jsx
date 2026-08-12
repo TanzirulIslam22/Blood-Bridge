@@ -1,9 +1,11 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 
 const Navbar = () => {
   const { user, dbUser, logout } = useAuth();
+  const { lang, setLang, t } = useLanguage();
   const navigate = useNavigate();
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -12,6 +14,17 @@ const Navbar = () => {
     await logout();
     navigate('/');
   };
+
+  const bnFont = lang === 'bn' ? { fontFamily: "'Noto Sans Bengali', 'Bebas Neue', sans-serif" } : {};
+
+  const navLinks = [
+    { to: '/', label: t('nav.home') },
+    { to: '/blood-donation-requests', label: t('nav.bloodRequests') },
+    { to: '/search-donors', label: t('nav.findDonors') },
+    { to: '/donation-camps', label: t('nav.camps') },
+    { to: '/health-check', label: t('nav.healthCheck') },
+    { to: '/blog', label: t('nav.blog') },
+  ];
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 py-4 px-6 md:px-12 flex items-center justify-between" style={{ background: 'linear-gradient(to bottom, rgba(10, 5, 5, 0.98) 0%, rgba(10, 5, 5, 0.9) 100%)', borderBottom: '1px solid rgba(255, 255, 255, 0.04)' }}>
@@ -24,14 +37,36 @@ const Navbar = () => {
         </span>
       </Link>
 
-      <ul className="hidden md:flex items-center gap-9">
-        <li><Link to="/" className="text-sm font-medium tracking-[1.5px] uppercase text-[#B09090] hover:text-[#F5E6E0] transition-colors">Home</Link></li>
-        <li><Link to="/blood-donation-requests" className="text-sm font-medium tracking-[1.5px] uppercase text-[#B09090] hover:text-[#F5E6E0] transition-colors">Blood Requests</Link></li>
-        <li><Link to="/search-donors" className="text-sm font-medium tracking-[1.5px] uppercase text-[#B09090] hover:text-[#F5E6E0] transition-colors">Find Donors</Link></li>
-        <li><Link to="/blog" className="text-sm font-medium tracking-[1.5px] uppercase text-[#B09090] hover:text-[#F5E6E0] transition-colors">Blog</Link></li>
+      <ul className="hidden md:flex items-center gap-9" style={bnFont}>
+        {navLinks.map(link => (
+          <li key={link.to}>
+            <Link to={link.to} className="text-sm font-medium tracking-[1.5px] uppercase text-[#B09090] hover:text-[#F5E6E0] transition-colors">{link.label}</Link>
+          </li>
+        ))}
       </ul>
 
       <div className="flex items-center gap-4">
+        <button
+          onClick={() => setLang(lang === 'en' ? 'bn' : 'en')}
+          className="flex items-center gap-1 px-2.5 py-1.5 text-xs font-bold tracking-wider"
+          style={{ border: '1px solid rgba(255, 255, 255, 0.12)', borderRadius: '6px', color: '#B09090', ...bnFont }}
+          title={lang === 'en' ? 'বাংলা' : 'English'}
+        >
+          {lang === 'en' ? (
+            <>
+              <span className="text-[#B09090]">EN</span>
+              <span className="text-[#D62828]">|</span>
+              <span className="text-[#F5E6E0]">বাং</span>
+            </>
+          ) : (
+            <>
+              <span className="text-[#F5E6E0]">EN</span>
+              <span className="text-[#D62828]">|</span>
+              <span className="text-[#B09090]">বাং</span>
+            </>
+          )}
+        </button>
+
         {user ? (
           <div className="relative">
             <button 
@@ -51,20 +86,20 @@ const Navbar = () => {
                   className="block px-4 py-3 text-sm text-[#B09090] hover:bg-[rgba(214,40,40,0.1)] hover:text-[#F5E6E0] transition-colors"
                   onClick={() => setDropdownOpen(false)}
                 >
-                  Dashboard
+                  {t('nav.dashboard')}
                 </Link>
                 <Link 
                   to="/dashboard/profile" 
                   className="block px-4 py-3 text-sm text-[#B09090] hover:bg-[rgba(214,40,40,0.1)] hover:text-[#F5E6E0] transition-colors"
                   onClick={() => setDropdownOpen(false)}
                 >
-                  Profile
+                  {t('nav.profile')}
                 </Link>
                 <button 
                   onClick={handleLogout}
                   className="block w-full text-left px-4 py-3 text-sm text-[#B09090] hover:bg-[rgba(214,40,40,0.1)] hover:text-[#F5E6E0] transition-colors"
                 >
-                  Logout
+                  {t('nav.logout')}
                 </button>
               </div>
             )}
@@ -75,7 +110,7 @@ const Navbar = () => {
             className="bg-[#D62828] text-white px-6 py-2.5 text-sm font-semibold tracking-[1.5px] uppercase hover:bg-[#FF2D2D] transition-colors"
             style={{ clipPath: 'polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%)' }}
           >
-            Login
+            {t('nav.login')}
           </Link>
         )}
 
@@ -95,11 +130,12 @@ const Navbar = () => {
 
       {menuOpen && (
         <div className="absolute top-full left-0 right-0 p-4 md:hidden" style={{ background: 'rgba(10, 5, 5, 0.98)', borderBottom: '1px solid rgba(255, 255, 255, 0.08)' }}>
-          <ul className="flex flex-col gap-4">
-            <li><Link to="/" className="block text-sm font-medium tracking-[1.5px] uppercase text-[#B09090] hover:text-[#F5E6E0]" onClick={() => setMenuOpen(false)}>Home</Link></li>
-            <li><Link to="/blood-donation-requests" className="block text-sm font-medium tracking-[1.5px] uppercase text-[#B09090] hover:text-[#F5E6E0]" onClick={() => setMenuOpen(false)}>Blood Requests</Link></li>
-            <li><Link to="/search-donors" className="block text-sm font-medium tracking-[1.5px] uppercase text-[#B09090] hover:text-[#F5E6E0]" onClick={() => setMenuOpen(false)}>Find Donors</Link></li>
-            <li><Link to="/blog" className="block text-sm font-medium tracking-[1.5px] uppercase text-[#B09090] hover:text-[#F5E6E0]" onClick={() => setMenuOpen(false)}>Blog</Link></li>
+          <ul className="flex flex-col gap-4" style={bnFont}>
+            {navLinks.map(link => (
+              <li key={link.to}>
+                <Link to={link.to} className="block text-sm font-medium tracking-[1.5px] uppercase text-[#B09090] hover:text-[#F5E6E0]" onClick={() => setMenuOpen(false)}>{link.label}</Link>
+              </li>
+            ))}
           </ul>
         </div>
       )}

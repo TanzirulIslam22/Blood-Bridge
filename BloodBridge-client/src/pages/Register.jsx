@@ -1,11 +1,14 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { toast } from 'react-hot-toast';
 import { districts, bloodGroups } from '../data/bangladesh';
 import { imgbbUpload } from '../utils/imgbbUpload';
 
 const Register = () => {
+  const { t, lang } = useLanguage();
+  const bnFont = lang === 'bn' ? { fontFamily: "'Noto Sans Bengali', 'DM Sans', sans-serif" } : {};
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -36,9 +39,9 @@ const Register = () => {
       try {
         const url = await imgbbUpload(file);
         setFormData(prev => ({ ...prev, photoURL: url }));
-        toast.success('Photo uploaded successfully');
+        toast.success(t('auth.photoUploaded'));
       } catch (error) {
-        toast.error('Photo upload failed');
+        toast.error(t('auth.photoFailed'));
       }
     }
   };
@@ -47,19 +50,19 @@ const Register = () => {
     e.preventDefault();
     
     if (formData.password.length < 6) {
-      toast.error('Password must be at least 6 characters');
+      toast.error(t('auth.passwordMin'));
       return;
     }
     if (!/[A-Z]/.test(formData.password)) {
-      toast.error('Password must contain at least one uppercase letter');
+      toast.error(t('auth.passwordUpper'));
       return;
     }
     if (!/[a-z]/.test(formData.password)) {
-      toast.error('Password must contain at least one lowercase letter');
+      toast.error(t('auth.passwordLower'));
       return;
     }
     if (formData.password !== formData.confirmPassword) {
-      toast.error('Passwords do not match');
+      toast.error(t('auth.passwordMismatch'));
       return;
     }
 
@@ -71,11 +74,11 @@ const Register = () => {
         district: formData.district,
         upazila: formData.upazila
       });
-      toast.success('Registration successful!');
+      toast.success(t('auth.registerSuccess'));
       navigate('/');
     } catch (error) {
       console.error('Registration error:', error);
-      toast.error(error.message || 'Registration failed');
+      toast.error(error.message || t('auth.registerFailed'));
     } finally {
       setLoading(false);
     }
@@ -85,7 +88,7 @@ const Register = () => {
     <div className="min-h-screen flex items-center justify-center py-16 px-4" style={{ 
       background: 'radial-gradient(ellipse 70% 60% at 70% 50%, rgba(139, 0, 0, 0.2) 0%, transparent 60%), linear-gradient(135deg, #0A0505 0%, #150A0A 40%, #1a0808 100%)' 
     }}>
-      <div className="w-full max-w-md bg-[#1E0E0E] border border-[rgba(255,255,255,0.05)] p-10">
+      <div className="w-full max-w-md bg-[#1E0E0E] border border-[rgba(255,255,255,0.05)] p-10" style={bnFont}>
         <Link to="/" className="flex items-center justify-center gap-3 mb-2">
           <div className="w-10 h-10 bg-[#D62828] flex items-center justify-center text-white text-lg font-bold" style={{ clipPath: 'polygon(50% 0%, 85% 35%, 100% 55%, 85% 75%, 50% 100%, 15% 75%, 0% 55%, 15% 35%)', boxShadow: '0 0 20px rgba(214, 40, 40, 0.35)' }}>
             🩸
@@ -96,13 +99,13 @@ const Register = () => {
         </Link>
         
         <h2 className="text-center text-[#F5E6E0] mt-8 mb-2" style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '40px', letterSpacing: '2px' }}>
-          Join the Cause
+          {t('auth.joinTheCause')}
         </h2>
-        <p className="text-center text-sm text-[#B09090] mb-8">Register to become a blood donor</p>
+        <p className="text-center text-sm text-[#B09090] mb-8">{t('auth.registerSubtitle')}</p>
         
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
-            <label className="block text-xs font-medium tracking-[1.5px] uppercase text-[#B09090] mb-2.5">Full Name</label>
+            <label className="block text-xs font-medium tracking-[1.5px] uppercase text-[#B09090] mb-2.5">{t('auth.fullName')}</label>
             <input
               type="text"
               name="name"
@@ -115,7 +118,7 @@ const Register = () => {
           </div>
           
           <div>
-            <label className="block text-xs font-medium tracking-[1.5px] uppercase text-[#B09090] mb-2.5">Email</label>
+            <label className="block text-xs font-medium tracking-[1.5px] uppercase text-[#B09090] mb-2.5">{t('auth.email')}</label>
             <input
               type="email"
               name="email"
@@ -129,7 +132,7 @@ const Register = () => {
 
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="block text-xs font-medium tracking-[1.5px] uppercase text-[#B09090] mb-2.5">Blood Group</label>
+              <label className="block text-xs font-medium tracking-[1.5px] uppercase text-[#B09090] mb-2.5">{t('auth.bloodGroup')}</label>
               <select
                 name="bloodGroup"
                 value={formData.bloodGroup}
@@ -137,14 +140,14 @@ const Register = () => {
                 className="w-full px-4 py-3.5 bg-[#150A0A] border border-[rgba(255,255,255,0.08)] text-[#F5E6E0] focus:outline-none focus:border-[#D62828] transition-colors"
                 required
               >
-                <option value="" className="bg-[#150A0A]">Select</option>
+                <option value="" className="bg-[#150A0A]">{t('auth.select')}</option>
                 {bloodGroups.map(bg => (
                   <option key={bg} value={bg} className="bg-[#150A0A]">{bg}</option>
                 ))}
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium tracking-[1.5px] uppercase text-[#B09090] mb-2.5">District</label>
+              <label className="block text-xs font-medium tracking-[1.5px] uppercase text-[#B09090] mb-2.5">{t('auth.district')}</label>
               <select
                 name="district"
                 value={formData.district}
@@ -152,7 +155,7 @@ const Register = () => {
                 className="w-full px-4 py-3.5 bg-[#150A0A] border border-[rgba(255,255,255,0.08)] text-[#F5E6E0] focus:outline-none focus:border-[#D62828] transition-colors"
                 required
               >
-                <option value="" className="bg-[#150A0A]">Select</option>
+                <option value="" className="bg-[#150A0A]">{t('auth.select')}</option>
                 {districts.map(d => (
                   <option key={d.name} value={d.name} className="bg-[#150A0A]">{d.name}</option>
                 ))}
@@ -161,7 +164,7 @@ const Register = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-medium tracking-[1.5px] uppercase text-[#B09090] mb-2.5">Upazila</label>
+            <label className="block text-xs font-medium tracking-[1.5px] uppercase text-[#B09090] mb-2.5">{t('auth.upazila')}</label>
             <select
               name="upazila"
               value={formData.upazila}
@@ -170,7 +173,7 @@ const Register = () => {
               required
               disabled={!formData.district}
             >
-              <option value="" className="bg-[#150A0A]">Select</option>
+              <option value="" className="bg-[#150A0A]">{t('auth.select')}</option>
               {selectedDistrict?.upazilas.map(u => (
                 <option key={u} value={u} className="bg-[#150A0A]">{u}</option>
               ))}
@@ -178,7 +181,7 @@ const Register = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-medium tracking-[1.5px] uppercase text-[#B09090] mb-2.5">Profile Photo</label>
+            <label className="block text-xs font-medium tracking-[1.5px] uppercase text-[#B09090] mb-2.5">{t('auth.profilePhoto')}</label>
             <input
               type="file"
               accept="image/*"
@@ -191,7 +194,7 @@ const Register = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-medium tracking-[1.5px] uppercase text-[#B09090] mb-2.5">Password</label>
+            <label className="block text-xs font-medium tracking-[1.5px] uppercase text-[#B09090] mb-2.5">{t('auth.password')}</label>
             <input
               type="password"
               name="password"
@@ -204,7 +207,7 @@ const Register = () => {
           </div>
 
           <div>
-            <label className="block text-xs font-medium tracking-[1.5px] uppercase text-[#B09090] mb-2.5">Confirm Password</label>
+            <label className="block text-xs font-medium tracking-[1.5px] uppercase text-[#B09090] mb-2.5">{t('auth.confirmPassword')}</label>
             <input
               type="password"
               name="confirmPassword"
@@ -222,14 +225,14 @@ const Register = () => {
             className="w-full bg-[#D62828] text-white py-3.5 text-sm font-semibold tracking-[2px] uppercase hover:bg-[#FF2D2D] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             style={{ clipPath: 'polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%)' }}
           >
-            {loading ? 'Registering...' : 'Register as Donor'}
+            {loading ? t('auth.registering') : t('auth.registerAsDonor')}
           </button>
         </form>
 
         <p className="mt-8 text-center text-sm text-[#B09090]">
-          Already have an account?{' '}
+          {t('auth.alreadyHave')}{' '}
           <Link to="/login" className="text-[#D62828] hover:underline">
-            Sign In
+            {t('auth.signIn')}
           </Link>
         </p>
       </div>

@@ -1,10 +1,13 @@
 import { useState } from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
+import { useLanguage } from '../context/LanguageContext';
 import { toast } from 'react-hot-toast';
 import { FcGoogle } from 'react-icons/fc';
 
 const Login = () => {
+  const { t, lang } = useLanguage();
+  const bnFont = lang === 'bn' ? { fontFamily: "'Noto Sans Bengali', 'DM Sans', sans-serif" } : {};
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
@@ -19,11 +22,11 @@ const Login = () => {
     setLoading(true);
     try {
       await login(email, password);
-      toast.success('Login successful!');
+      toast.success(t('auth.loginSuccess'));
       navigate(from, { replace: true });
     } catch (error) {
       console.error('Login error:', error);
-      toast.error(error.message || 'Login failed');
+      toast.error(error.message || t('auth.loginFailed'));
     } finally {
       setLoading(false);
     }
@@ -33,11 +36,11 @@ const Login = () => {
     setLoading(true);
     try {
       await loginWithGoogle();
-      toast.success('Login successful!');
+      toast.success(t('auth.loginSuccess'));
       navigate(from, { replace: true });
     } catch (error) {
       console.error('Google login error:', error);
-      toast.error('Google login failed');
+      toast.error(t('auth.googleLoginFailed'));
     } finally {
       setLoading(false);
     }
@@ -47,7 +50,7 @@ const Login = () => {
     <div className="min-h-screen flex items-center justify-center px-4 py-16" style={{ 
       background: 'radial-gradient(ellipse 70% 60% at 70% 50%, rgba(139, 0, 0, 0.2) 0%, transparent 60%), linear-gradient(135deg, #0A0505 0%, #150A0A 40%, #1a0808 100%)' 
     }}>
-      <div className="w-full max-w-md bg-[#1E0E0E] border border-[rgba(255,255,255,0.05)] p-8 md:p-12">
+      <div className="w-full max-w-md bg-[#1E0E0E] border border-[rgba(255,255,255,0.05)] p-8 md:p-12" style={bnFont}>
         <Link to="/" className="flex items-center justify-center gap-3 mb-2">
           <div className="w-10 h-10 bg-[#D62828] flex items-center justify-center text-white text-lg font-bold" style={{ clipPath: 'polygon(50% 0%, 85% 35%, 100% 55%, 85% 75%, 50% 100%, 15% 75%, 0% 55%, 15% 35%)', boxShadow: '0 0 20px rgba(214, 40, 40, 0.35)' }}>
             🩸
@@ -58,13 +61,13 @@ const Login = () => {
         </Link>
         
         <h2 className="text-center text-[#F5E6E0] mt-8 mb-2" style={{ fontFamily: "'Bebas Neue', sans-serif", fontSize: '40px', letterSpacing: '2px' }}>
-          Welcome Back
+          {t('auth.welcomeBack')}
         </h2>
-        <p className="text-center text-sm text-[#B09090] mb-10">Sign in to continue to your dashboard</p>
+        <p className="text-center text-sm text-[#B09090] mb-10">{t('auth.signInSubtitle')}</p>
         
         <form onSubmit={handleSubmit} className="space-y-6">
           <div>
-            <label className="block text-xs font-medium tracking-[1.5px] uppercase text-[#B09090] mb-2.5">Email</label>
+            <label className="block text-xs font-medium tracking-[1.5px] uppercase text-[#B09090] mb-2.5">{t('auth.email')}</label>
             <input
               type="email"
               value={email}
@@ -76,7 +79,7 @@ const Login = () => {
           </div>
           
           <div>
-            <label className="block text-xs font-medium tracking-[1.5px] uppercase text-[#B09090] mb-2.5">Password</label>
+            <label className="block text-xs font-medium tracking-[1.5px] uppercase text-[#B09090] mb-2.5">{t('auth.password')}</label>
             <input
               type="password"
               value={password}
@@ -93,13 +96,13 @@ const Login = () => {
             className="w-full bg-[#D62828] text-white py-3.5 text-sm font-semibold tracking-[2px] uppercase hover:bg-[#FF2D2D] transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             style={{ clipPath: 'polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%)' }}
           >
-            {loading ? 'Signing in...' : 'Sign In'}
+            {loading ? t('auth.signingIn') : t('auth.signIn')}
           </button>
         </form>
 
         <div className="flex items-center gap-4 my-8 text-[#B09090]">
           <div className="flex-1 h-px bg-[rgba(255,255,255,0.08)]"></div>
-          <span className="text-xs">or</span>
+          <span className="text-xs">{t('auth.or')}</span>
           <div className="flex-1 h-px bg-[rgba(255,255,255,0.08)]"></div>
         </div>
 
@@ -109,13 +112,13 @@ const Login = () => {
           className="w-full flex items-center justify-center gap-3 py-3.5 border border-[rgba(255,255,255,0.15)] text-[#F5E6E0] hover:border-[#D62828] hover:bg-[rgba(214,40,40,0.08)] transition-colors disabled:opacity-50"
         >
           <FcGoogle className="text-xl" />
-          <span className="text-sm font-medium">Continue with Google</span>
+          <span className="text-sm font-medium">{t('auth.continueWithGoogle')}</span>
         </button>
 
         <p className="mt-10 text-center text-sm text-[#B09090]">
-          Don't have an account?{' '}
+          {t('auth.dontHaveAccount')}{' '}
           <Link to="/register" className="text-[#D62828] hover:underline">
-            Register as Donor
+            {t('auth.registerAsDonor')}
           </Link>
         </p>
       </div>

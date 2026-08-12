@@ -1,9 +1,11 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
+import { useLanguage } from '../context/LanguageContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const Blog = () => {
+  const { t } = useLanguage();
   const [blogs, setBlogs] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -25,7 +27,7 @@ const Blog = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8 text-center text-[#F5E6E0]">Latest Blog Posts</h1>
+      <h1 className="text-3xl font-bold mb-8 text-center text-[#F5E6E0]">{t('blog.latestPosts')}</h1>
       
       {blogs.length > 0 ? (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -51,7 +53,7 @@ const Blog = () => {
                     to={`/blog/${blog._id}`}
                     className="text-[#D62828] font-semibold hover:underline"
                   >
-                    Read More
+                    {t('blog.readMore')}
                   </Link>
                 </div>
               </div>
@@ -60,7 +62,7 @@ const Blog = () => {
         </div>
       ) : (
         <div className="text-center py-12">
-          <p className="text-[#B09090] text-lg">No blog posts available</p>
+          <p className="text-[#B09090] text-lg">{t('blog.noPosts')}</p>
         </div>
       )}
     </div>

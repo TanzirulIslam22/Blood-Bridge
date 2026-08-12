@@ -1,6 +1,6 @@
 @import "tailwindcss";
 
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=DM+Sans:wght@300;400;500;600&family=Noto+Sans+Bengali:wght@400;500;600;700&display=swap');
 
 @theme {
   --color-blood-red: #D62828;
@@ -14,6 +14,14 @@
   --font-bebas: 'Bebas Neue', sans-serif;
   --font-dm: 'DM Sans', sans-serif;
   --font-dm-serif: 'DM Serif Display', serif;
+}
+
+html[lang="bn"] body,
+html[lang="bn"] button,
+html[lang="bn"] input,
+html[lang="bn"] select,
+html[lang="bn"] textarea {
+  font-family: 'Noto Sans Bengali', 'DM Sans', sans-serif;
 }
 
 body {

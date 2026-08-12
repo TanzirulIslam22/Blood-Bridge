@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../../context/AuthContext';
+import { useLanguage } from '../../context/LanguageContext';
 import axios from '../../hooks/useAxios';
 import { toast } from 'react-hot-toast';
 import LoadingSpinner from '../../components/LoadingSpinner';
@@ -8,6 +9,7 @@ import Swal from 'sweetalert2';
 
 const MyRequests = () => {
   const { dbUser } = useAuth();
+  const { t } = useLanguage();
   const [requests, setRequests] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -29,20 +31,20 @@ const MyRequests = () => {
 
   const handleDelete = async (id) => {
     Swal.fire({
-      title: 'Are you sure?',
-      text: 'This action cannot be undone',
+      title: t('dashboard.deleteTitle'),
+      text: t('dashboard.deleteText'),
       icon: 'warning',
       showCancelButton: true,
-      confirmButtonText: 'Delete',
-      cancelButtonText: 'Cancel'
+      confirmButtonText: t('dashboard.delete'),
+      cancelButtonText: t('dashboard.cancel')
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
           await axios.delete(`/api/donationRequests/${id}`);
           setRequests(requests.filter(r => r._id !== id));
-          toast.success('Request deleted successfully');
+          toast.success(t('dashboard.requestDeleted'));
         } catch (error) {
-          toast.error('Failed to delete request');
+          toast.error(t('dashboard.deleteRequestFailed'));
         }
       }
     });
@@ -52,9 +54,9 @@ const MyRequests = () => {
     try {
       await axios.put(`/api/donationRequests/${id}/complete`, {});
       setRequests(requests.map(r => r._id === id ? { ...r, status: 'done' } : r));
-      toast.success('Request marked as completed');
+      toast.success(t('dashboard.markedCompleted'));
     } catch (error) {
-      toast.error('Failed to complete request');
+      toast.error(t('dashboard.completeFailed'));
     }
   };
 
@@ -62,9 +64,9 @@ const MyRequests = () => {
     try {
       await axios.put(`/api/donationRequests/${id}/cancel`, {});
       setRequests(requests.map(r => r._id === id ? { ...r, status: 'canceled' } : r));
-      toast.success('Request canceled');
+      toast.success(t('dashboard.requestCanceled'));
     } catch (error) {
-      toast.error('Failed to cancel request');
+      toast.error(t('dashboard.cancelFailed'));
     }
   };
 
@@ -74,14 +76,14 @@ const MyRequests = () => {
     <div>
       <div className="flex justify-between items-center mb-6">
         <h1 className="text-[#F5E6E0] text-2xl font-bold" style={{ fontFamily: "'Bebas Neue', sans-serif", letterSpacing: '1px' }}>
-          My Requests
+          {t('dashboard.menu.myRequests')}
         </h1>
         <Link 
           to="/dashboard/create-donation-request"
           className="bg-[#D62828] text-white px-6 py-2.5 text-sm font-semibold tracking-[1.5px] uppercase hover:bg-[#FF2D2D] transition-colors"
           style={{ clipPath: 'polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%)' }}
         >
-          Create New Request
+          {t('dashboard.createNewRequest')}
         </Link>
       </div>
 
@@ -91,12 +93,12 @@ const MyRequests = () => {
             <table className="w-full">
               <thead style={{ background: '#150A0A', borderBottom: '1px solid rgba(255,255,255,0.05)' }}>
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-medium tracking-[1.5px] uppercase text-[#B09090]">Recipient</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium tracking-[1.5px] uppercase text-[#B09090]">Blood Group</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium tracking-[1.5px] uppercase text-[#B09090]">Location</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium tracking-[1.5px] uppercase text-[#B09090]">Date</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium tracking-[1.5px] uppercase text-[#B09090]">Status</th>
-                  <th className="px-6 py-4 text-left text-xs font-medium tracking-[1.5px] uppercase text-[#B09090]">Actions</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium tracking-[1.5px] uppercase text-[#B09090]">{t('dashboard.recipient')}</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium tracking-[1.5px] uppercase text-[#B09090]">{t('dashboard.bloodGroup')}</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium tracking-[1.5px] uppercase text-[#B09090]">{t('dashboard.location')}</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium tracking-[1.5px] uppercase text-[#B09090]">{t('dashboard.date')}</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium tracking-[1.5px] uppercase text-[#B09090]">{t('dashboard.status')}</th>
+                  <th className="px-6 py-4 text-left text-xs font-medium tracking-[1.5px] uppercase text-[#B09090]">{t('dashboard.actions')}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-[rgba(255,255,255,0.05)]">
@@ -104,7 +106,12 @@ const MyRequests = () => {
                   <tr key={request._id}>
                     <td className="px-6 py-4 text-[#F5E6E0]">{request.recipientName}</td>
                     <td className="px-6 py-4">
-                      <span className="bg-[rgba(214,40,40,0.15)] text-[#D62828] px-2 py-1 rounded text-sm font-semibold">{request.bloodGroup}</span>
+                      <div className="flex items-center gap-2">
+                        <span className="bg-[rgba(214,40,40,0.15)] text-[#D62828] px-2 py-1 rounded text-sm font-semibold">{request.bloodGroup}</span>
+                        {request.urgent && (
+                          <span className="text-[10px] font-bold uppercase bg-[#D62828] text-white px-1.5 py-0.5 rounded animate-pulse">{t('requests.urgent')}</span>
+                        )}
+                      </div>
                     </td>
                     <td className="px-6 py-4 text-[#B09090]">{request.district}, {request.upazila}</td>
                     <td className="px-6 py-4 text-[#B09090]">{new Date(request.donationDate).toLocaleDateString()}</td>
@@ -126,13 +133,13 @@ const MyRequests = () => {
                               to={`/dashboard/edit-donation-request/${request._id}`}
                               className="text-[#D62828] hover:underline text-sm"
                             >
-                              Edit
+                              {t('dashboard.edit')}
                             </Link>
                             <button 
                               onClick={() => handleDelete(request._id)}
                               className="text-red-500 hover:underline text-sm"
                             >
-                              Delete
+                              {t('dashboard.delete')}
                             </button>
                           </>
                         )}
@@ -142,13 +149,13 @@ const MyRequests = () => {
                               onClick={() => handleComplete(request._id)}
                               className="text-green-500 hover:underline text-sm"
                             >
-                              Done
+                              {t('dashboard.done')}
                             </button>
                             <button 
                               onClick={() => handleCancel(request._id)}
                               className="text-red-500 hover:underline text-sm"
                             >
-                              Cancel
+                              {t('dashboard.cancel')}
                             </button>
                           </>
                         )}
@@ -161,12 +168,12 @@ const MyRequests = () => {
           </div>
         ) : (
           <div className="text-center py-12">
-            <p className="text-[#B09090]">No requests yet</p>
+            <p className="text-[#B09090]">{t('dashboard.noRequestsYet')}</p>
             <Link 
               to="/dashboard/create-donation-request"
               className="text-[#D62828] hover:underline mt-2 inline-block text-sm"
             >
-              Create your first request
+              {t('dashboard.createYourFirst')}
             </Link>
           </div>
         )}

@@ -1,10 +1,12 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import axios from 'axios';
+import { useLanguage } from '../context/LanguageContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 
 const BlogDetail = () => {
   const { id } = useParams();
+  const { t } = useLanguage();
   const [blog, setBlog] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -23,7 +25,7 @@ const BlogDetail = () => {
   }, [id]);
 
   if (loading) return <LoadingSpinner />;
-  if (!blog) return <div className="text-center py-12 text-[#B09090]">Blog not found</div>;
+  if (!blog) return <div className="text-center py-12 text-[#B09090]">{t('blog.notFound')}</div>;
 
   return (
     <div className="container mx-auto px-4 py-8">
@@ -39,7 +41,7 @@ const BlogDetail = () => {
         <h1 className="text-3xl md:text-4xl font-bold mb-4 text-[#F5E6E0]">{blog.title}</h1>
         
         <div className="flex items-center gap-4 text-[#B09090] mb-6">
-          <span>By {blog.authorName || 'Admin'}</span>
+          <span>{t('blog.by', { author: blog.authorName || t('blog.authorFallback') })}</span>
           <span>|</span>
           <span>{new Date(blog.createdAt).toLocaleDateString()}</span>
         </div>
@@ -54,7 +56,7 @@ const BlogDetail = () => {
             to="/blog" 
             className="inline-block bg-[#1E0E0E] border border-[rgba(255,255,255,0.15)] text-[#F5E6E0] px-6 py-2 rounded-lg hover:border-[#D62828] hover:text-[#D62828] transition-colors"
           >
-            Back to Blog
+            {t('blog.backToBlog')}
           </Link>
         </div>
       </div>
