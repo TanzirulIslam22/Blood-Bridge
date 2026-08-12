@@ -12,6 +12,7 @@ const donationRequestSchema = new mongoose.Schema({
   donationDate: { type: Date, required: true },
   donationTime: { type: String, required: true },
   requestMessage: { type: String },
+  urgent: { type: Boolean, default: false },
   status: { type: String, enum: ['pending', 'inprogress', 'done', 'canceled'], default: 'pending' },
   donorInfo: {
     name: { type: String },
