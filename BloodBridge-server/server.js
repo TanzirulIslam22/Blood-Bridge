@@ -6,6 +6,8 @@ const mongoose = require('mongoose');
 const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const donationRequestRoutes = require('./routes/donationRequests');
+const donationRecordRoutes = require('./routes/donationRecords');
+const donationCampRoutes = require('./routes/donationCamps');
 const blogRoutes = require('./routes/blogs');
 const statsRoutes = require('./routes/stats');
 
@@ -17,6 +19,8 @@ app.use(express.json());
 app.use('/api/auth', authRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/donationRequests', donationRequestRoutes);
+app.use('/api/donationRecords', donationRecordRoutes);
+app.use('/api/donationCamps', donationCampRoutes);
 app.use('/api/blogs', blogRoutes);
 app.use('/api/stats', statsRoutes);
 
