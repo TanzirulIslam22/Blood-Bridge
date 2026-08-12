@@ -6,6 +6,13 @@ A full-stack **MERN (MongoDB + Express + React + Node.js)** blood donation platf
 
 ---
 
+## 🌐 Live Demo
+
+- **Frontend (live site):** https://blood-bridge-orcin.vercel.app
+- **Backend API:** https://bloodbridge-server-pi.vercel.app
+
+---
+
 ## 📑 Table of Contents
 
 - [Features](#-features)
