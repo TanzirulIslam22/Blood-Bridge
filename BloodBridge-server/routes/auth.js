@@ -47,7 +47,8 @@ router.post('/register', async (req, res) => {
       district,
       upazila,
       role: 'donor',
-      status: 'active'
+      status: 'active',
+      points: bloodGroup && district ? 10 : 0
     });
 
     await newUser.save();
